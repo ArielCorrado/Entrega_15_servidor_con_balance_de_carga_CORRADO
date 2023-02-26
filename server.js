@@ -8,6 +8,8 @@ const path = require("path");
 const mongoose = require ("mongoose");
 mongoose.set('strictQuery', true);
 const argv = require("minimist")(process.argv.slice(2));
+const {fork} = require("child_process");
+const childProcess = fork("./childProcess.js");
 
 const app = express();
 app.use(express.static(path.resolve(__dirname,"./public/build")));
@@ -58,12 +60,10 @@ app.get("/api/info", (req, res) => {
 })
 
 app.get("/api/randoms", (req, res) => {
-    const numeros = {}
-    for (let i = 1; i <= 2000; i++) {
-        const number = Math.trunc((Math.random() * 999.9) + 1);    //Número aleatorio entre 1 y 1000
-        numeros[number] = numeros[number] ? numeros[number] + 1 : 1;
-    }
-    res.end(JSON.stringify(numeros, null, 2));
+    childProcess.send(req.query.cant ?? 1e8);
+    childProcess.on("message", (numeros) =>{
+        res.end(JSON.stringify(numeros, null, 2));
+    })
 })
 
 app.get("*", (req, res) => {
