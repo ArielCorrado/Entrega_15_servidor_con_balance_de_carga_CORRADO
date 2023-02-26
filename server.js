@@ -1,9 +1,13 @@
 const express = require("express");
 const passport = require("passport");
 const session = require("express-session");
+require('dotenv').config();
 const {storeMongo} = require("./DBConnect/DBConnect");
 require("./config/auth");
 const path = require("path");
+const mongoose = require ("mongoose");
+mongoose.set('strictQuery', true);
+const argv = require("minimist")(process.argv.slice(2));
 
 const app = express();
 app.use(express.static(path.resolve(__dirname,"./public/build")));
@@ -39,10 +43,31 @@ app.get("/api/logout", (req, res) => {
     });
 })
 
+app.get("/api/info", (req, res) => {
+    const data = {
+        "Argumentos de entrada": argv,
+        "Sistema Operativo": process.platform,
+        "Version de Node": process.version,
+        "Memoria Reservada": process.memoryUsage().rss,
+        "Path de Ejecucion": process.execPath,
+        "ID del Proceso": process.pid,
+        "Carpeta del Proyecto": process.cwd(),
+    }    
+    console.log(process)
+    res.end(JSON.stringify(data, null, 4));    
+})
+
 app.get("*", (req, res) => {
     res.sendFile(path.resolve (__dirname, "./public/build/index.html"))
 })
 
-app.listen(8080)
+
+const PORT = argv._[0] || 8080;
+
+mongoose.connect(process.env.MONGO_URI_USERS)
+.then(() => {
+    app.listen(PORT, console.log(`Server corriendo en puerto ${PORT}`))
+})
+
 
 
