@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^4.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^6.9.2",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "entrega_13_inicio_-de_sesion_con-passport_y_mongodb",
+  "version": "1.0.0",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
