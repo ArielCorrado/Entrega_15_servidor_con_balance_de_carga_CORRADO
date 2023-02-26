@@ -54,7 +54,16 @@ app.get("/api/info", (req, res) => {
         "Carpeta del Proyecto": process.cwd(),
     }    
     console.log(process)
-    res.end(JSON.stringify(data, null, 4));    
+    res.end(JSON.stringify(data, null, 2));    
+})
+
+app.get("/api/randoms", (req, res) => {
+    const numeros = {}
+    for (let i = 1; i <= 2000; i++) {
+        const number = Math.trunc((Math.random() * 999.9) + 1);    //Número aleatorio entre 1 y 1000
+        numeros[number] = numeros[number] ? numeros[number] + 1 : 1;
+    }
+    res.end(JSON.stringify(numeros, null, 2));
 })
 
 app.get("*", (req, res) => {
