@@ -13,13 +13,12 @@ const childProcess = fork("./childProcess.js");
 const cluster = require("cluster");
 const maxCPUs = require("os").cpus().length;                //Da la cantidad de Hilos (No los nucleos del CPU)
 
-const PORT = argv._[0] || 8080;
-const mode = argv.mode || "FORK";
-console.log(argv)
+const PORT = argv._[0] || 8080;                             //Ejemplo para iniciar app: "node server.js 8085 --mode=FORK"    
+const mode = argv.mode || "FORK";                   
 
 const createServer = () => {
     const app = express();
-    app.use(express.static(path.resolve(__dirname,"./public/build")));
+    // app.use(express.static(path.resolve(__dirname,"./public/build")));
     app.use(express.json());
     app.use(session({ 
         store: storeMongo,
@@ -30,7 +29,7 @@ const createServer = () => {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-
+ 
     app.post("/api/login", passport.authenticate("login"), (req, res) => {
         req.session.username = req.user.username;
         res.json({username: req.user.username, isLogged: true});
@@ -67,24 +66,15 @@ const createServer = () => {
     })
 
     app.get("/api/randoms", (req, res) => {
-        childProcess.send(req.query.cant ?? 1e20);  ////
+        childProcess.send(req.query.cant ?? 1e8);  ////
         childProcess.on("message", (numeros) =>{
             res.end(JSON.stringify(numeros, null, 2));
         })
-    })
-
-    app.get("/api/randoms2/:num", (req, res) => {
-        const numeros = {}
-        for (let i = 1; i <= req.params.num; i++) {
-            const number = Math.trunc((Math.random() * 999.999) + 1);    //Número aleatorio entre 1 y 1000
-            numeros[number] = numeros[number] ? numeros[number] + 1 : 1;
-        }
-        res.end(JSON.stringify(numeros, null, 2));
-    })
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve (__dirname, "./public/build/index.html"))
-    })
+    })   
+  
+    // app.get("*", (req, res) => {
+    //     res.sendFile(path.resolve (__dirname, "./public/build/index.html"))
+    // })
     
     mongoose.connect(process.env.MONGO_URI_USERS)
     .then(() => {

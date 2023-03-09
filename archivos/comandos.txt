@@ -1,0 +1,20 @@
+Comandos Nodemon:
+nodemon -- 8086 --mode=FORK
+nodemon -- 8086 --mode=CLUSTER
+
+Comandos con Forever:
+forever start server.js 8086 --mode=FORK
+forever start server.js 8086 --mode=CLUSTER
+
+Comandos con pm2:
+pm2 start server.js --watch -- 8086
+pm2 start server.js --watch -i max -- 8086
+
+Comandos usando nginx (Para un procesador de 20 hilos):
+pm2 start server.js --name="server1" --watch -i 10 -- 8081
+pm2 start server.js --name="server2" --watch -i 10 -- 8080 
+
+pm2 start server.js --name="server1" --watch -i 5 -- 8082
+pm2 start server.js --name="server2" --watch -i 5 -- 8083 
+pm2 start server.js --name="server3" --watch -i 5 -- 8084 
+pm2 start server.js --name="server4" --watch -i 5 -- 8085
